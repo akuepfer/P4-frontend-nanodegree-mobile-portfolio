@@ -1,3 +1,161 @@
+
+# Result of Udacity P4 Website Performance Optimization portfolio project
+
+- Optimze pages to get a maxmum points by Google Page Speed
+- Optimize JavaScript for rate
+
+
+## Summary 
+
+* Optimized files are under the directory `dist/` checked-in.
+* Optimization is automated using the gulp build system and based on the original files.
+* Optimized files achieve 100% for Google Page Insights when using own web server.
+* The Undertow web server was used for the tests with compression and caching configured.
+
+
+## Optimize a Page using Google Page Speed
+
+I am using the [gulp](http://gulpjs.com/) build system to automate the optimization of the web pages.
+gulp is a streaming build system, based on nodejs, built by [Fractal](https://github.com/wearefractal) and the open source community.
+There are several nodejs gulp plugins supporting the HTML page optimization:
+
+* [gulp-imagemin](https://www.npmjs.com/package/gulp-imagemin) - Minify PNG, JPEG, GIF and SVG images.
+* [imagemin-pngquant](https://www.npmjs.com/package/imagemin-pngquant) - pngquant imagemin plugin.
+* [gulp-uglify](https://www.npmjs.com/package/gulp-uglify) - Minify files with UglifyJS
+* [gulp-minify-css](https://www.npmjs.com/package/gulp-minify-css) - Minify css with clean-css.
+* [gulp-htmlmin](https://www.npmjs.com/package/gulp-htmlmin) - gulp plugin to minify HTML.
+* [critical](https://github.com/addyosmani/critical) - Extract & Inline Critical-path CSS from HTML (1)
+* [psi](https://www.npmjs.com/package/psi) - PageSpeed Insights with reporting.
+
+(1) The 'critical.stream' function of the critical plugin is only supported by the plugin on github but not yet by the plugin on npmjs. 
+
+
+### Page optimization
+
+The development loop for page optimization has four steps, prior of this the web-server must be started.
+
+1. Perform optimization in `gulpfile.js`
+1. Run the command `gulp`
+1. Click on the test link or run `gulp psi:mobile` to retrieve page score.
+1. Continue with step 1.
+
+
+### Installation 
+
+Assuming nodjs is installed on the system run the shell commands
+
+```bash
+npm install --global gulp
+npm install --save-dev gulp-imagemin
+#  .. continue for all required plugins
+```
+
+See gulp [getting-started](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md) for further details.
+
+Install Addy Osmani's latest critical plugin from github.
+
+
+```bash
+npm install -S "git+https://github.com/addyosmani/critical.git"
+```
+
+
+### Configration
+
+The file `gulpfile.js` is a JavaScript with the task of the gulp build. The tasks of the gulpfile are:
+
+Tasks to clean
+
+* **clean:dist** - Delete all files generated in the dist directroy tree.
+* **clean:download** - Removes files downloaded by download:font and download:analytics task. These files have been processed by minify-css and minify:js
+and are stored after processing at dist/css and dist/js
+
+Tasks to download files
+
+* **download:font** - Donload Google font file. To support embeding by the 'critical' plugin, the file must be stored on the local disk.
+* **download:analytics** -Download Google analytics.js file. For 100% page insight file has to be served through own web server 
+with at least one week cache life time.
+
+Tasks to minify compress files
+
+* **minify:image** - optimize / compress images
+* **minify:js** - minify JavaScript files
+* **minify-css** - minify CSS files
+
+Task to process HTML files
+
+* **critical** - process HTML files
+  * replace remote HTTP URLs with references to local downloaded files (to set HTTP header directives for caching)
+  * minify HTML
+  * generate & inline critical-path CSS 
+
+Task to run Google Page Speed Indeed from gulp
+
+* **psi:mobile** - run Google Page Speed Indeed
+* **psi:desktop** - run Google Page Speed Indeed
+
+Summary of Task
+
+* **build** - Single task to execute all of the tasks above at once
+* **default** - Task executed when gulp is called without a task argument
+
+
+### Setting up and run Undertow web server
+
+To gain 100% by Google it is required beside adjusting the source files, setting up a web server with certain aspects.
+For this project I am utilizing the [Undertow](http://undertow.io/) web server. Undertow may be setup using Java code.
+The source for my example under the directory `SimpleServer/`. The main class is `fileserving.StaticHttpServer`.
+The server listens at port `8778`.
+
+This serer has three configration sections
+
+* Serve static files
+* Enabling compression
+* Set HTTP header cache control fields to a value larger than one week
+
+To run the server execute (a Java JDK 1.8 is required):
+
+```
+cd SimpleServer
+gradle run
+```
+
+
+### Accessing the Development Server by Google Page Speed
+
+To give Google Page Speed access to the pages served by Undertow on the local computer, the ADSL modem / router
+utilized to access the internet hast to forward to the port of the web server.
+
+* Configure ADSL router for port forwarding
+* Determine own IP address through http://whatismyipaddress.com/<br>
+  Returns in my case 188.60.34.5
+* The URL for Google Page Speed is therefore http://188.60.34.5:8778/index.html
+
+
+
+#### URLs to test
+
+The URLs to access the pages of the project through pagespeed are:
+
+* [index](https://developers.google.com/speed/pagespeed/insights/?hl=en&url=http://188.60.34.5:8778/index.html)
+* [project-2048](https://developers.google.com/speed/pagespeed/insights/?hl=en&url=http://188.60.34.5:8778/project-2048.html)
+* [project-mobile](https://developers.google.com/speed/pagespeed/insights/?hl=en&url=http://188.60.34.5:8778/project-mobile.html)
+* [project-webperf](https://developers.google.com/speed/pagespeed/insights/?hl=en&url=http://188.60.34.5:8778/project-webperf.html)
+* [pizza](https://developers.google.com/speed/pagespeed/insights/?hl=en&url=http://188.60.34.5:8778/views/pizza.html)
+
+ 
+## References
+
+* [Developing a gulp Edge - The Streaming Build System](http://bleedingedgepress.com/developing-gulp-js-edge/)
+* [Adi Osmani, Critical path plugin for nodejs](https://github.com/addyosmani/critical)
+* [Demo of critical path plugin](https://github.com/addyosmani/critical-path-css-demo)
+* [Udertow WebServer](http://undertow.io/)
+* [Undertow Page Compression](http://stackoverflow.com/questions/28295752/compressing-undertow-server-responses)
+
+
+
+# Original text from Udacity
+
 ## Website Performance Optimization portfolio project
 
 Your challenge, if you wish to accept it (and we sure hope you will), is to optimize this online portfolio for speed! In particular, optimize the critical rendering path and make this page render as quickly as possible by applying the techniques you've picked up in the [Critical Rendering Path course](https://www.udacity.com/course/ud884).

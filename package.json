@@ -1,0 +1,12 @@
+{
+  "name": "P4-frontend-nanodegree-mobile-portfolio",
+  "version": "1.0.0",
+  "description": "Udacity Nanodegree",
+  "keywords": [
+    "gulp",
+    "gulpfriendly"
+  ],
+  "devDependencies": {
+    "gulp": "^3.8.0"
+  }
+}

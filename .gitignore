@@ -1,0 +1,13 @@
+node_modules
+.idea
+.gradle
+dist/*.gzip
+NOTES.md
+SimpleServer/build/
+doc/
+dist/css/print.css.undertow.encoding.gzip
+dist/css/style.css.undertow.encoding.gzip
+dist/img/2048.png.undertow.encoding.gzip
+dist/img/profilepic.jpg.undertow.encoding.gzip
+dist/js/analytics.js.undertow.encoding.gzip
+dist/js/perfmatters.js.undertow.encoding.gzip

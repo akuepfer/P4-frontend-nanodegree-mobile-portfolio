@@ -1,3 +1,6 @@
+//
+// Gulp build-file to perform page optimization for Udacity project 4.
+//
 'use strict';
 
 var gulp = require('gulp');
@@ -19,7 +22,9 @@ var psi = require('psi');
 var site = 'http://188.60.34.5:8778/index.html';
 var key = '';
 
-
+//
+// Remove files created for optimization
+//
 gulp.task('clean:dist', function (cb) {
     del([
         'dist/css/*.css',
@@ -85,7 +90,7 @@ gulp.task('minify:css', function () {
 
 //
 // Process HTML files
-// - replace remote files references with references to local downloaded
+// - replace remote files references with references to locally downloaded files
 // - minify HTML
 // - generate & inline critical-path CSS
 //
@@ -138,8 +143,9 @@ gulp.task('clean:download', function (cb) {
     ], cb);
 });
 
-
-
+//
+// Call Google page speed for mobile web site analysis
+//
 gulp.task('psi:mobile', function () {
     return psi(site, {
         // key: key
@@ -151,6 +157,9 @@ gulp.task('psi:mobile', function () {
     });
 });
 
+//
+// Call Google page speed for desktop web site analysis
+//
 gulp.task('psi:desktop', function () {
     return psi(site, {
         nokey: 'true',
@@ -161,9 +170,6 @@ gulp.task('psi:desktop', function () {
         console.log(data.pageStats);
     });
 });
-
-
-
 
 
 //

@@ -1,11 +1,15 @@
 
 # Result of Udacity P4 Website Performance Optimization portfolio project
 
-- Optimze pages to get a maxmum points by Google Page Speed
-- Optimize JavaScript for rate
+Project consists of two parts
+
+- Website Performance Optimization
+- Browser Rendering Optimization
 
 
 ## Summary 
+
+### Website Performance Optimization
 
 * Optimized files are under the directory `dist/` checked-in.
 * Optimization is automated using the gulp build system and based on the original files.
@@ -13,19 +17,19 @@
 * The Undertow web server was used for the tests with compression and caching configured.
 
 
-## Optimize a Page using Google Page Speed
+## Website Performance Optimization
 
 I am using the [gulp](http://gulpjs.com/) build system to automate the optimization of the web pages.
 gulp is a streaming build system, based on nodejs, built by [Fractal](https://github.com/wearefractal) and the open source community.
 There are several nodejs gulp plugins supporting the HTML page optimization:
 
 * [gulp-imagemin](https://www.npmjs.com/package/gulp-imagemin) - Minify PNG, JPEG, GIF and SVG images.
-* [imagemin-pngquant](https://www.npmjs.com/package/imagemin-pngquant) - pngquant imagemin plugin.
+* [imagemin-pngquant](https://www.npmjs.com/package/imagemin-pngquant) - Used by gulp-imagemin plugin.
 * [gulp-uglify](https://www.npmjs.com/package/gulp-uglify) - Minify files with UglifyJS
 * [gulp-minify-css](https://www.npmjs.com/package/gulp-minify-css) - Minify css with clean-css.
-* [gulp-htmlmin](https://www.npmjs.com/package/gulp-htmlmin) - gulp plugin to minify HTML.
+* [gulp-htmlmin](https://www.npmjs.com/package/gulp-htmlmin) - Plugin to minify HTML.
 * [critical](https://github.com/addyosmani/critical) - Extract & Inline Critical-path CSS from HTML (1)
-* [psi](https://www.npmjs.com/package/psi) - PageSpeed Insights with reporting.
+* [psi](https://www.npmjs.com/package/psi) - Page Speed Insights with reporting.
 
 (1) The 'critical.stream' function of the critical plugin is only supported by the plugin on github but not yet by the plugin on npmjs. 
 
@@ -34,8 +38,8 @@ There are several nodejs gulp plugins supporting the HTML page optimization:
 
 The development loop for page optimization has four steps, prior of this the web-server must be started.
 
-1. Perform optimization in `gulpfile.js`
-1. Run the command `gulp`
+1. Add (or update) optimization tasks to the build file `gulpfile.js`
+1. Run the command `gulp` to generate the optimized HTML-, JavaScript- and CSS-files.
 1. Click on the test link or run `gulp psi:mobile` to retrieve page score.
 1. Continue with step 1.
 
@@ -62,39 +66,39 @@ npm install -S "git+https://github.com/addyosmani/critical.git"
 
 ### Configration
 
-The file `gulpfile.js` is a JavaScript with the task of the gulp build. The tasks of the gulpfile are:
+The build file `gulpfile.js` is a JavaScript file with the task of the gulp build. The tasks for this project are:
 
 Tasks to clean
 
-* **clean:dist** - Delete all files generated in the dist directroy tree.
-* **clean:download** - Removes files downloaded by download:font and download:analytics task. These files have been processed by minify-css and minify:js
-and are stored after processing at dist/css and dist/js
+* **clean:dist** - Deletes all files generated in the `dist` directory tree.
+* **clean:download** - Removes files downloaded by the download:font and download:analytics tasks. These files will be processed by 
+the minify-css and minify:js tasks and are stored after processing under `dist/css` and `dist/js`.
 
 Tasks to download files
 
-* **download:font** - Donload Google font file. To support embeding by the 'critical' plugin, the file must be stored on the local disk.
-* **download:analytics** -Download Google analytics.js file. For 100% page insight file has to be served through own web server 
+* **download:font** - Download Google font file. To support embeding by the 'critical' plugin, the file must be stored on the local disk.
+* **download:analytics** - Download Google analytics.js file. For 100% page insight file has to be served through own web server 
 with at least one week cache life time.
 
-Tasks to minify compress files
+Tasks to minify or compress files
 
-* **minify:image** - optimize / compress images
-* **minify:js** - minify JavaScript files
-* **minify-css** - minify CSS files
+* **minify:image** - Optimize / compress images.
+* **minify:js** - Minify JavaScript files.
+* **minify-css** -Minify CSS files.
 
 Task to process HTML files
 
-* **critical** - process HTML files
-  * replace remote HTTP URLs with references to local downloaded files (to set HTTP header directives for caching)
-  * minify HTML
-  * generate & inline critical-path CSS 
+* **critical** - Process HTML files.
+  * Replace remote HTTP URLs with references to local downloaded files (to be able to set HTTP header directives for caching)
+  * Minify HTML.
+  * Generate and inline critical-path CSS. 
 
-Task to run Google Page Speed Indeed from gulp
+Task to run Google Page Speed Insights from gulp
 
-* **psi:mobile** - run Google Page Speed Indeed
-* **psi:desktop** - run Google Page Speed Indeed
+* **psi:mobile** - Run Google Page Speed Insights for mobile page score.
+* **psi:desktop** - Run Google Page Speed Insights for desktop page score.
 
-Summary of Task
+Summary tasks
 
 * **build** - Single task to execute all of the tasks above at once
 * **default** - Task executed when gulp is called without a task argument
@@ -102,12 +106,12 @@ Summary of Task
 
 ### Setting up and run Undertow web server
 
-To gain 100% by Google it is required beside adjusting the source files, setting up a web server with certain aspects.
-For this project I am utilizing the [Undertow](http://undertow.io/) web server. Undertow may be setup using Java code.
-The source for my example under the directory `SimpleServer/`. The main class is `fileserving.StaticHttpServer`.
+To gain 100% by Google Page Speed, beside adjusting the source files, setting up a web server with certain aspects is needed.
+For this project I am utilizing the [Undertow](http://undertow.io/) web server. Undertow may be setup using a Java class.
+The source for my example is under the directory `SimpleServer/`. The main and only class is `fileserving.StaticHttpServer`.
 The server listens at port `8778`.
 
-This serer has three configration sections
+This serer has three configuration sections
 
 * Serve static files
 * Enabling compression
@@ -135,7 +139,7 @@ utilized to access the internet hast to forward to the port of the web server.
 
 #### URLs to test
 
-The URLs to access the pages of the project through pagespeed are:
+The URLs to access the pages of the project through page speed are:
 
 * [index](https://developers.google.com/speed/pagespeed/insights/?hl=en&url=http://188.60.34.5:8778/index.html)
 * [project-2048](https://developers.google.com/speed/pagespeed/insights/?hl=en&url=http://188.60.34.5:8778/project-2048.html)

@@ -46,7 +46,7 @@ import static io.undertow.Handlers.resource;
 public class StaticHttpServer {
 
     public static final String LOCAL_PATH
-            = "/home/armin/ws/Udacity_Nanodegree_FrontendDeveloper/P4-frontend-nanodegree-mobile-portfolio/dist";
+            = "../dist";
     public static final String LOCAL_PATH_ORIG
         = "/home/armin/ws/Udacity_Nanodegree_FrontendDeveloper/P4-frontend-nanodegree-mobile-portfolio-orig";
 

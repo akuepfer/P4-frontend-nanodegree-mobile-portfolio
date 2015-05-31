@@ -106,6 +106,7 @@ public class StaticHttpServer {
         Undertow optimizedServer = Undertow.builder()
                                   .addHttpListener(8778, "0.0.0.0")
                                   .setHandler(resourceHandler)
+                                  // .setHandler(requestDumpingHandler)
                                   .build();
         optimizedServer.start();
     }

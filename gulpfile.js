@@ -13,6 +13,8 @@ var pngquant = require('imagemin-pngquant');
 var critical = require('critical').stream;
 var uglify = require('gulp-uglify');
 var minifyCss = require('gulp-minify-css');
+var sourcemaps = require('gulp-sourcemaps');
+var CacheBuster = require('gulp-cachebust');
 var replace = require('gulp-replace-task');
 var htmlmin = require('gulp-htmlmin');
 var runSequence = require('run-sequence');
@@ -21,6 +23,8 @@ var del = require('del');
 var psi = require('psi');
 var site = 'http://188.60.34.5:8778/index.html';
 var key = '';
+
+var cachebust = new CacheBuster();
 
 //
 // Remove files created for optimization
@@ -38,6 +42,7 @@ gulp.task('clean:dist', function (cb) {
 //
 // Donload Google font file
 // To support embeding by 'critical' plugin, file must be local stored
+// Don't cache-bust and don't and dont sourcemap yet.
 //
 gulp.task('download:font', function () {
     return request('http://fonts.googleapis.com/css?family=Open+Sans:400,700')
@@ -49,6 +54,7 @@ gulp.task('download:font', function () {
 //
 // Download analytics.js file.
 // For 100% page insight resorce must be served with at least one week cache life time
+// Don't cache-bust and don't and dont sourcemap yet.
 //
 gulp.task('download:analytics', function () {
     return request('http://www.google-analytics.com/analytics.js')
@@ -67,7 +73,6 @@ gulp.task('minify:image', function() {
             use: [pngquant()]
         }))
         .pipe(gulp.dest('dist/img'));
-
 });
 
 //
@@ -78,6 +83,7 @@ gulp.task('minify:js', function() {
         .pipe(uglify())
         .pipe(gulp.dest('dist/js'));
 });
+
 
 //
 // Minify CSS
@@ -122,6 +128,10 @@ gulp.task('critical', function () {
             {
                 match: 'src="http://cameronwp.github.io/udportfolio/img/2048.png"',
                 replacement: 'src="img/2048.png"'
+            },
+            {
+                match: '<img style="width: 100px;" src="views/images/pizzeria.jpg">',
+                replacement: '<img src="img/pizzeria_100px.jpg">'
             }
         ],
             usePrefix: false
@@ -193,3 +203,57 @@ gulp.task('default', ['build']);
 
 
 
+
+
+
+//
+// Optimize Images
+//
+gulp.task('views:minify:image', function() {
+    return gulp.src('views/images/*')
+        .pipe(imagemin({
+            progressive: true,
+            optimizationLevel: 7,
+            //svgoPlugins: [{removeViewBox: false}],
+            use: [pngquant()]
+        }))
+        .pipe(gulp.dest('dist/views/images/'));
+});
+
+//
+// Minify JavaScript
+//
+gulp.task('views:minify:js', function() {
+    return gulp.src('views/js/*.js')
+        .pipe(uglify())
+        .pipe(gulp.dest('dist/views/js'));
+});
+
+
+//
+// Minify CSS
+//
+gulp.task('views:minify:css', function () {
+    return gulp.src('views/css/*.css')
+        .pipe(minifyCss())
+        .pipe(gulp.dest('dist/views/css'));
+});
+
+
+gulp.task('views:minify:html', function () {
+
+    return gulp.src('views/*.html')
+        .pipe(htmlmin({collapseWhitespace: true}))
+        .pipe(print())
+        .pipe(gulp.dest('dist/views'))
+});
+
+
+//
+// build - single task to execute all of the tasks above at once
+//
+gulp.task('views:build', function(done) {
+    runSequence(
+        ['views:minify:image', 'views:minify:js', 'views:minify:css', 'views:minify:html'],
+        done);
+});

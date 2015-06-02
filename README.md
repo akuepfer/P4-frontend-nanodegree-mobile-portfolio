@@ -9,15 +9,26 @@ Project consists of two parts
 
 ## Summary 
 
-### Website Performance Optimization
+###Part 1: Optimize PageSpeed Insights score for index.html
 
 * Optimized files are under the directory `dist/` checked-in.
 * Optimization is automated using the gulp build system and based on the original files.
 * Optimized files achieve 100% for Google Page Insights when using own web server.
 * The Undertow web server was used for the tests with compression and caching configured.
 
+To run Google Page Speed Insights with optimized pages and the Undertow web server, click on the links.
+(PSI should report 100 / 100)
 
-## Website Performance Optimization
+* [PSI http://www.kuepfer.sh:8778/index.html](https://developers.google.com/speed/pagespeed/insights/?url=http://www.kuepfer.sh:8778/)
+* [PSI http://www.kuepfer.sh:8778/project-2048.html](https://developers.google.com/speed/pagespeed/insights/?url=http://www.kuepfer.sh:8778/project-2048.html)
+* [PSI http://www.kuepfer.sh:8778/project-webperf.html](https://developers.google.com/speed/pagespeed/insights/?url=http://www.kuepfer.sh:8778/project-webperf.html)
+* [PSI http://www.kuepfer.sh:8778/project-mobile.html](https://developers.google.com/speed/pagespeed/insights/?url=http://www.kuepfer.sh:8778/project-mobile.html)
+
+###Part 2: Optimize Frames per Second in pizza.html
+
+
+
+## Part 1: Optimize PageSpeed Insights score for index.html
 
 I am using the [gulp](http://gulpjs.com/) build system to automate the optimization of the web pages.
 gulp is a streaming build system, based on nodejs, built by [Fractal](https://github.com/wearefractal) and the open source community.

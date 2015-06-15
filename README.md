@@ -26,7 +26,8 @@ To run Google Page Speed Insights with optimized pages and the Undertow web serv
 
 ###Part 2: Optimize Frames per Second in pizza.html
 
-
+* Updated files are checked in at original location under the directory `views/`
+* Optimized and minified files are accessable under [Cam's Pizzeria](http://www.kuepfer.sh:8778/views/pizza.html)
 
 ## Part 1: Optimize PageSpeed Insights score for index.html
 
@@ -250,11 +251,12 @@ This is a CSS to hint to the browser about using a new composite layer.
  }
 ``` 
 
-Final timeline
+### Final timeline
 
 ![Final timeline](doc/final.png)
 
-
+The page update is mostly performed within 16ms.
+Further investigation should be performed to reduce the 'Composite Layers' paint time.
 
 
  

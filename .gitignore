@@ -4,7 +4,6 @@ node_modules
 dist/*.gzip
 NOTES.md
 SimpleServer/build/
-doc/
 dist/css/print.css.undertow.encoding.gzip
 dist/css/style.css.undertow.encoding.gzip
 dist/img/2048.png.undertow.encoding.gzip

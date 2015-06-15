@@ -158,6 +158,105 @@ The URLs to access the pages of the project through page speed are:
 * [project-webperf](https://developers.google.com/speed/pagespeed/insights/?hl=en&url=http://188.60.34.5:8778/project-webperf.html)
 * [pizza](https://developers.google.com/speed/pagespeed/insights/?hl=en&url=http://188.60.34.5:8778/views/pizza.html)
 
+
+ 
+## Browser Rendering Optimization
+ 
+### Changes in main.js
+
+Optimized the function `changePizzaSizes()` according to the video.
+
+```JavaScript
+  function changePizzaSizes(size) {
+    switch(size) {
+      case "1":
+        newwidth = 25;
+        break;
+      case "2":
+        newwidth = 33.33;
+        break;
+      case "3":
+        newwidth = 50;
+        break;
+      default:
+        console.log("bug in sizeSwitcher");
+    }
+    var randomPizzas = document.querySelectorAll(".randomPizzaContainer");
+    for (var i = 0; i < randomPizzas.length; i++) {
+      randomPizzas[i].style.width = newwidth + "%";                                 // layout invalidation
+    }
+  }
+```
+
+In the for loop where the pizzas are created, moved statement document.getElementById("randomPizzas") out of the loop.
+This avoids 96 unneeded calls of `document.getElementById("randomPizzas")`.
+
+```JavaScript
+var pizzasDiv = document.getElementById("randomPizzas");
+for (var i = 2; i < 100; i++) {
+  pizzasDiv.appendChild(pizzaElementGenerator(i));
+}
+```
+ 
+Avoid forced synchronous layout by moving access of scrollTop property access out of the for loop.
+
+```JavaScript
+  var scrollTop = document.body.scrollTop;
+  var items = document.querySelectorAll('.mover');
+  for (var i = 0; i < items.length; i++) {
+    var phase = Math.sin((scrollTop / 1250) + (i % 5));
+    items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+  }
+``` 
+ 
+ 
+Run requestAnimationFrame with updatePositions on scroll to allows the browser to run
+the  event handler when it is free to do new paint work on the screen.
+This is not a big performance boost compared to `window.addEventListener('scroll', updatePositions);`
+
+```JavaScript
+ window.addEventListener('scroll', function() {
+   window.requestAnimationFrame(updatePositions);
+ });
+``` 
+
+Reduced the for loop in `document.addEventListener`.
+On a full hd screen 32 pizzas are enough to display 4 rows and 8 columns with pizzas.
+
+```JavaScript
+   for (var i = 0; i < 32; i++) {
+       ...
+   }
+```
+
+
+Time line after applying the optimizations until here.
+
+![Timeline to here](doc/without_transform.png)
+
+ 
+ 
+### Changes in style.css
+
+To declare ahead-of-time what properties are likely to change in the future, added `will-change: left` to the class mover.
+This is a CSS to hint to the browser about using a new composite layer.
+
+```CSS
+ .mover {
+   position: fixed;
+   width: 256px;
+   z-index: -1;
+   will-change: left;
+ }
+``` 
+
+Final timeline
+
+![Final timeline](doc/final.png)
+
+
+
+
  
 ## References
 
@@ -166,6 +265,7 @@ The URLs to access the pages of the project through page speed are:
 * [Demo of critical path plugin](https://github.com/addyosmani/critical-path-css-demo)
 * [Udertow WebServer](http://undertow.io/)
 * [Undertow Page Compression](http://stackoverflow.com/questions/28295752/compressing-undertow-server-responses)
+
 
 
 
